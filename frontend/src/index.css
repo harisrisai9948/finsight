@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  /* FINSIGHT Brand Colors – extracted from logo */
+  --color-primary:     #0e6db4;   /* deep ocean blue */
+  --color-primary-dark: #094d82;  /* darker blue hover */
+  --color-teal:        #00a896;   /* teal from logo swirl */
+  --color-accent:      #6cc04a;   /* bright lime green from bars */
+  --color-accent-dark: #5aaa38;   /* darker green */
+
+  /* Gradient helpers */
+  --gradient-brand: linear-gradient(135deg, #0e6db4 0%, #00a896 55%, #6cc04a 100%);
+  --gradient-brand-h: linear-gradient(90deg, #0e6db4 0%, #00a896 55%, #6cc04a 100%);
+}
+
+:root {
+  font-family: 'Inter', system-ui, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color-scheme: light;
+  color: #1a1a1a;
+  background-color: #f8fafc;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Brand gradient text utility */
+.text-brand-gradient {
+  background: var(--gradient-brand-h);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Brand gradient bg */
+.bg-brand-gradient {
+  background: var(--gradient-brand);
+}
