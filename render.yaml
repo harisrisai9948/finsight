@@ -1,3 +1,8 @@
+databases:
+  - name: finsight-db
+    databaseName: finsight
+    user: finsight
+
 services:
   - type: web
     name: finsight-backend
@@ -9,6 +14,22 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: finsight-db
+          property: connectionString
       - key: SECRET_KEY
         sync: false
+      - key: CORS_ORIGINS
+        sync: false
+
+  - type: static
+    name: finsight-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          name: finsight-backend
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL

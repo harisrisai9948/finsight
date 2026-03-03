@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, Body
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
@@ -23,10 +23,13 @@ models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="TechSiri API")
 
-# Configure CORS
+# Configure CORS - allow production frontend URL from env
+_cors_origins = ["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174"]
+if os.getenv("CORS_ORIGINS"):
+    _cors_origins.extend(o.strip() for o in os.getenv("CORS_ORIGINS").split(",") if o.strip())
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:5174"], # Vite ports
+    allow_origins=_cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -511,7 +514,12 @@ def create_fraud_alert(alert: schemas.FraudAlertCreate, current_user: models.Use
     return new_alert
 
 @app.put("/fraud-alerts/{alert_id}", response_model=schemas.FraudAlert)
-def update_fraud_alert_status(alert_id: int, status_update: dict, current_user: models.User = Depends(auth.get_current_user), db: Session = Depends(get_db)):
+def update_fraud_alert_status(
+    alert_id: int,
+    status_update: dict = Body(...),
+    current_user: models.User = Depends(auth.get_current_user),
+    db: Session = Depends(get_db),
+):
     alert = db.query(models.FraudAlert).filter(models.FraudAlert.id == alert_id, models.FraudAlert.user_id == current_user.id).first()
     if not alert:
         raise HTTPException(status_code=404, detail="Fraud alert not found")
